@@ -1,1292 +1,739 @@
 <!DOCTYPE html>
-<html lang="ms" class="h-full bg-slate-900 text-slate-100 font-sans">
+<html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-BILIK KHAS SKUSES - SMK Seri Kundang</title>
-    
+    <title>E-Bilik Khas SKUSES - SMK Seri Kundang</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Google Fonts Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(12px);
-        }
-        .modal-backdrop {
-            background-color: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(4px);
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
     </style>
 </head>
-<body class="min-h-full flex flex-col bg-slate-950 text-slate-800 antialiased selection:bg-blue-500 selection:text-white">
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
 
-    <!-- HEADER / NAVIGATION -->
-    <header class="sticky top-0 z-30 bg-slate-900/95 backdrop-blur border-b border-slate-800 text-white shadow-xl">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16 sm:h-20">
-                
-                <!-- BRANDING -->
-                <div class="flex items-center gap-3">
-                    <img src="https://lh3.googleusercontent.com/d/16tiDP8PtlWZ0j6v2X2sRlSpwz8CAnAYn" 
-                         alt="Lencana SMK Seri Kundang" 
-                         class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-md"
-                         onerror="this.onerror=null; this.src='https://drive.google.com/thumbnail?id=16tiDP8PtlWZ0j6v2X2sRlSpwz8CAnAYn&sz=w500';">
-                    <div>
-                        <h1 class="font-extrabold text-base sm:text-xl tracking-tight leading-tight text-white">E-BILIK KHAS <span class="text-blue-400">SKUSES</span></h1>
-                        <p class="text-[10px] sm:text-xs text-slate-400 font-medium">SMK Seri Kundang • Sistem Tempahan Digital</p>
-                    </div>
-                </div>
-
-                <!-- RIGHT ACTION BUTTONS -->
-                <div class="flex items-center gap-2 sm:gap-3">
-                    <!-- ADMIN BUTTON -->
-                    <button id="adminNavBtn" onclick="toggleAdminModal()" 
-                            class="inline-flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs sm:text-sm border border-slate-700 transition">
-                        <i class="fa-solid fa-user-shield text-blue-400"></i>
-                        <span id="adminBtnLabel">Mod Admin</span>
-                    </button>
+    <!-- NAVIGATION BAR -->
+    <nav class="bg-indigo-900 text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="https://lh3.googleusercontent.com/d/16tiDP8PtlWZ0j6v2X2sRlSpwz8CAnAYn" alt="Lencana SKUSES" class="h-12 w-auto object-contain bg-white rounded p-1 shadow-sm">
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">E-BILIK KHAS SKUSES</h1>
+                    <p class="text-xs text-indigo-200">SMK Seri Kundang</p>
                 </div>
             </div>
-        </div>
-    </header>
-
-    <!-- LIVE ROOM STATUS BADGES HEADER -->
-    <section class="bg-slate-900 border-b border-slate-800 py-3 px-4 overflow-x-auto text-xs">
-        <div class="max-w-7xl mx-auto flex items-center gap-3 min-w-max">
-            <span class="text-slate-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span> Status Bilik Hari Ini:
-            </span>
-            <div id="liveBadgesContainer" class="flex items-center gap-2">
-                <!-- Badges dynamically injected -->
+            <div class="flex items-center space-x-2">
+                <button onclick="openAdminModal()" class="bg-indigo-700 hover:bg-indigo-600 text-xs md:text-sm px-3 py-2 rounded-lg transition flex items-center gap-1 font-medium">
+                    <i class="fas fa-user-shield"></i> Mod Admin
+                </button>
             </div>
         </div>
-    </section>
+    </nav>
 
     <!-- MAIN CONTAINER -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-grow w-full">
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <!-- NAV TABS -->
-        <div class="flex border-b border-slate-800 mb-6 gap-2 sm:gap-4 overflow-x-auto pb-1">
-            <button onclick="switchTab('tempah')" id="tab-tempah" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-bold border-b-2 border-blue-500 text-blue-400 transition flex items-center gap-2 whitespace-nowrap rounded-t-lg bg-slate-900/50">
-                <i class="fa-solid fa-calendar-plus"></i> Borang Tempahan
-            </button>
-            <button onclick="switchTab('jadual')" id="tab-jadual" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition flex items-center gap-2 whitespace-nowrap">
-                <i class="fa-solid fa-list-check"></i> Senarai & Status Jadual
-            </button>
-            <button onclick="switchTab('kalendar')" id="tab-kalendar" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition flex items-center gap-2 whitespace-nowrap">
-                <i class="fa-solid fa-calendar-days"></i> Kalendar Bulanan
-            </button>
-            <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn hidden px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition items-center gap-2 whitespace-nowrap">
-                <i class="fa-solid fa-sliders text-amber-400"></i> Panel Kawalan Admin
-            </button>
-        </div>
+        <!-- LEFT COLUMN: FORM TEMPAHAN -->
+        <div class="lg:col-span-2 space-y-6">
 
-        <!-- TAB 1: BORANG TEMPAHAN -->
-        <div id="view-tempah" class="tab-content block">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                
-                <!-- FORM CONTAINER -->
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/80">
-                        <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
-                            <div>
-                                <h2 class="text-xl font-extrabold text-slate-900">Borang Permohonan Bilik Khas</h2>
-                                <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Sila lengkapkan butiran tempahan bilik di bawah.</p>
-                            </div>
-                            <span class="text-xs font-bold px-3 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200">
-                                SKUSES Digital
-                            </span>
-                        </div>
-
-                        <form id="bookingForm" onsubmit="handleBookingSubmit(event)" class="space-y-5">
-                            
-                            <!-- NAMA PEMOHON -->
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Guru / Pemohon <span class="text-red-500">*</span></label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                        <i class="fa-solid fa-user-tie"></i>
-                                    </span>
-                                    <input type="text" id="teacherName" required placeholder="Contoh: Cikgu Ahmad Bin Zaki" 
-                                           class="w-full pl-10 pr-4 py-2.5 text-sm bg-slate-50 border border-slate-300 text-slate-900 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition font-medium">
-                                </div>
-                            </div>
-
-                            <!-- PILIHAN BILIK KHAS -->
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Pilih Bilik Khas <span class="text-red-500">*</span></label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                        <i class="fa-solid fa-door-open"></i>
-                                    </span>
-                                    <select id="roomSelect" required class="w-full pl-10 pr-10 py-2.5 text-sm bg-slate-50 border border-slate-300 text-slate-900 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none transition appearance-none font-medium">
-                                        <option value="">-- Pilih Bilik Khas --</option>
-                                        <option value="Aula Inspirasi">Aula Inspirasi</option>
-                                        <option value="Dewan Gemilang">Dewan Gemilang</option>
-                                        <option value="Bilik MBMMBI">Bilik MBMMBI</option>
-                                        <option value="Bilik APD">Bilik APD</option>
-                                        <option value="Makmal Komputer 1">Makmal Komputer 1</option>
-                                        <option value="Makmal Komputer 2">Makmal Komputer 2</option>
-                                        <option value="PSS D Anggerik">PSS D Anggerik</option>
-                                        <option value="Bilik Intelek">Bilik Intelek</option>
-                                    </select>
-                                    <span class="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-slate-400">
-                                        <i class="fa-solid fa-chevron-down text-xs"></i>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- JENIS TEMPAHAN -->
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Mod Tempahan <span class="text-red-500">*</span></label>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <label class="cursor-pointer">
-                                        <input type="radio" name="bookingType" value="jam" checked onchange="toggleBookingType('jam')" class="peer hidden">
-                                        <div class="p-3 text-center rounded-xl border border-slate-300 bg-slate-50 text-slate-700 peer-checked:bg-blue-50 peer-checked:border-blue-600 peer-checked:text-blue-700 font-bold text-xs transition">
-                                            <i class="fa-solid fa-clock mb-1 block text-base"></i>
-                                            Mengikut Jam (1 Tarikh)
-                                        </div>
-                                    </label>
-                                    <label class="cursor-pointer">
-                                        <input type="radio" name="bookingType" value="hari" onchange="toggleBookingType('hari')" class="peer hidden">
-                                        <div class="p-3 text-center rounded-xl border border-slate-300 bg-slate-50 text-slate-700 peer-checked:bg-blue-50 peer-checked:border-blue-600 peer-checked:text-blue-700 font-bold text-xs transition">
-                                            <i class="fa-solid fa-calendar-week mb-1 block text-base"></i>
-                                            > 1 hari
-                                        </div>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- SINGLE DATE & TIME -->
-                            <div id="singleDateContainer" class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Tarikh Tempahan <span class="text-red-500">*</span></label>
-                                    <input type="date" id="singleDate" class="w-full px-3.5 py-2 text-sm bg-white border border-slate-300 text-slate-900 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none">
-                                    <p class="text-[11px] text-slate-500 mt-1"><i class="fa-solid fa-circle-info"></i> Tarikh lampau disekat secara automatik.</p>
-                                </div>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Masa Mula <span class="text-red-500">*</span></label>
-                                        <input type="time" id="startTime" class="w-full px-3 py-2 text-sm bg-white border border-slate-300 text-slate-900 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Masa Tamat <span class="text-red-500">*</span></label>
-                                        <input type="time" id="endTime" class="w-full px-3 py-2 text-sm bg-white border border-slate-300 text-slate-900 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- MULTI DATE SELECTION -->
-                            <div id="multiDateContainer" class="hidden p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
-                                <div class="flex items-center justify-between pb-1 border-b border-slate-200">
-                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Pilih Tarikh (Maksimum 5 Hari)</label>
-                                    <div class="flex items-center gap-1.5">
-                                        <button type="button" id="prevMultiMonthBtn" onclick="changeMultiPickerMonth(-1)" class="px-2 py-1 bg-white border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed">
-                                            <i class="fa-solid fa-chevron-left"></i>
-                                        </button>
-                                        <span id="multiPickerMonthTitle" class="text-xs font-bold text-slate-800 min-w-[90px] text-center"></span>
-                                        <button type="button" onclick="changeMultiPickerMonth(1)" class="px-2 py-1 bg-white border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100">
-                                            <i class="fa-solid fa-chevron-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-7 gap-1 text-center font-bold text-[10px] text-slate-500 py-1">
-                                    <div>Ahd</div><div>Isni</div><div>Sel</div><div>Rab</div><div>Kha</div><div>Jum</div><div>Sab</div>
-                                </div>
-                                <div id="multiDayCalendarGrid" class="grid grid-cols-7 gap-1.5">
-                                    <!-- Dynamic Calendar Grid -->
-                                </div>
-                                <div id="selectedMultiDaysBadge" class="flex flex-wrap gap-1.5 pt-2"></div>
-
-                                <!-- CUSTOM TIME FOR EACH SELECTED DATE -->
-                                <div id="multiDayTimeInputsContainer" class="space-y-3 pt-3 border-t border-slate-200 hidden">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                                            <i class="fa-solid fa-clock text-blue-600"></i> Tetapkan Masa Mengikut Tarikh:
-                                        </span>
-                                        <button type="button" onclick="applyFirstTimeToAll()" class="text-[11px] font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg transition border border-blue-200 flex items-center gap-1">
-                                            <i class="fa-solid fa-clone"></i> Sama Semua Tarikh
-                                        </button>
-                                    </div>
-                                    <div id="multiDayTimeList" class="space-y-2">
-                                        <!-- Dynamic Time Inputs for Selected Dates -->
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- TUJUAN / NAMA PROGRAM -->
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Program / Tujuan <span class="text-red-500">*</span></label>
-                                <textarea id="bookingPurpose" rows="3" required placeholder="Contoh: Bengkel Teknik Menjawab Soalan SPM Bahasa Melayu" 
-                                          class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-300 text-slate-900 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none transition"></textarea>
-                            </div>
-
-                            <!-- PIN 3-DIGIT -->
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kod PIN 3-Digit (Untuk Pembatalan Kendiri) <span class="text-red-500">*</span></label>
-                                <div class="relative max-w-[180px]">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                        <i class="fa-solid fa-key text-xs"></i>
-                                    </span>
-                                    <input type="text" id="userPin" maxlength="3" pattern="\d{3}" required placeholder="Cth: 123" 
-                                           class="w-full pl-10 pr-3 py-2 text-sm bg-slate-50 border border-slate-300 text-slate-900 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none font-mono tracking-widest text-center font-bold">
-                                </div>
-                                <p class="text-[11px] text-slate-500 mt-1">Gunakan 3 nombor ini jika ingin membatalkan tempahan kemudian.</p>
-                            </div>
-
-                            <!-- SUBMIT BUTTON -->
-                            <button type="submit" class="w-full py-3.5 px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-600/30 transition transform active:scale-[0.99] flex items-center justify-center gap-2 text-sm">
-                                <i class="fa-solid fa-paper-plane"></i> Hantar Tempahan Bilik
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- RIGHT SIDEBAR -->
-                <div class="space-y-6">
-                    
-                    <!-- BANNER TEMPAHAN KUNCI -->
-                    <div class="bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 rounded-3xl p-6 text-slate-950 shadow-xl relative overflow-hidden border border-amber-300">
-                        <div class="absolute -right-4 -bottom-4 opacity-15 text-7xl font-black">
-                            <i class="fa-solid fa-key"></i>
-                        </div>
-                        <div class="relative z-10 space-y-3">
-                            <span class="px-2.5 py-1 bg-slate-950/20 text-slate-950 font-extrabold text-[10px] rounded-full uppercase tracking-wider">PENTING</span>
-                            <h3 class="text-lg font-black leading-snug">Perlukan Kunci Bilik Khas?</h3>
-                            <p class="text-xs font-medium text-slate-900/90 leading-relaxed">
-                                Sila pastikan anda mengisi Borang Tempahan Kunci selepas membuat tempahan bilik.
-                            </p>
-                            <a href="https://forms.gle/bQA9qQcUrgMUpfuD7" target="_blank" rel="noopener noreferrer" 
-                               class="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-950 text-amber-400 hover:bg-slate-900 font-bold text-xs rounded-xl shadow transition">
-                                <i class="fa-solid fa-external-link-alt"></i> Buka Google Form Kunci
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- KEMASKINI / BATAL TEMPAHAN -->
-                    <div class="glass-card rounded-3xl p-6 shadow-xl border border-slate-200/80 space-y-4">
-                        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                            <i class="fa-solid fa-user-gear text-blue-600"></i> Pembatalan Kendiri Tempahan
-                        </h3>
-                        <p class="text-xs text-slate-500">Masukkan ID Tempahan dan Kod PIN 3-Digit untuk membatalkan tempahan anda.</p>
-                        
-                        <div class="space-y-3 pt-1">
-                            <input type="text" id="lookupId" placeholder="ID Tempahan (Cth: BK-1001)" class="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-600 font-medium">
-                            <input type="text" id="lookupPin" maxlength="3" placeholder="Kod PIN 3-Digit" class="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-600 font-mono text-center font-bold">
-                            <button type="button" onclick="handleUserCancelBooking()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition shadow">
-                                Semak & Batalkan
-                            </button>
-                        </div>
-                    </div>
-
+            <!-- BANNER PERINGATAN KUNCI -->
+            <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg shadow-sm flex items-start space-x-3">
+                <i class="fas fa-key text-amber-600 text-xl mt-1"></i>
+                <div>
+                    <h2 class="font-bold text-amber-800 text-base">Perlukan Kunci Bilik Khas?</h2>
+                    <p class="text-sm text-amber-700">Sila pastikan anda mengisi Borang Tempahan Kunci selepas membuat tempahan bilik.</p>
                 </div>
             </div>
-        </div>
 
-        <!-- TAB 2: SENARAI & STATUS JADUAL -->
-        <div id="view-jadual" class="tab-content hidden space-y-6">
-            <div class="glass-card rounded-3xl p-6 shadow-2xl border border-slate-200">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4 mb-4">
-                    <h2 class="font-extrabold text-slate-900 text-lg">Senarai Rekod Tempahan</h2>
+            <!-- CARD BORANG TEMPAHAN -->
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                <h2 class="text-xl font-bold text-slate-800 mb-4 pb-2 border-b flex items-center gap-2">
+                    <i class="fas fa-calendar-plus text-indigo-600"></i> Borang Tempahan Bilik
+                </h2>
+
+                <form id="bookingForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
                     
-                    <!-- FILTERS -->
-                    <div class="flex flex-wrap items-center gap-2">
-                        <input type="text" id="searchJadual" onkeyup="renderJadualView()" placeholder="Cari pemohon / program..." class="px-3.5 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-600 w-full sm:w-48 text-slate-900">
-                        <select id="filterRoom" onchange="renderJadualView()" class="px-3.5 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-600 text-slate-900 font-medium">
-                            <option value="ALL">Semua Bilik</option>
+                    <!-- PILIH BILIK KHAS -->
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Bilik Khas</label>
+                        <select id="roomSelect" required class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <option value="">-- Pilih Bilik Khas --</option>
                             <option value="Aula Inspirasi">Aula Inspirasi</option>
-                            <option value="Dewan Gemilang">Dewan Gemilang</option>
-                            <option value="Bilik MBMMBI">Bilik MBMMBI</option>
+                            <option value="Bilik Mesyuarat Utama">Bilik Mesyuarat Utama</option>
                             <option value="Bilik APD">Bilik APD</option>
                             <option value="Makmal Komputer 1">Makmal Komputer 1</option>
                             <option value="Makmal Komputer 2">Makmal Komputer 2</option>
-                            <option value="PSS D Anggerik">PSS D Anggerik</option>
-                            <option value="Bilik Intelek">Bilik Intelek</option>
+                            <option value="Bilik Tayang / SAL">Bilik Tayang / SAL</option>
+                            <option value="Dewan Seri Kundang">Dewan Seri Kundang</option>
+                            <option value="Bilik Inovasi">Bilik Inovasi</option>
                         </select>
                     </div>
-                </div>
 
-                <!-- TABLE -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
-                        <thead>
-                            <tr class="bg-slate-100 text-slate-700 uppercase font-bold text-[11px] tracking-wider border-b border-slate-200">
-                                <th class="p-3">ID & Masa</th>
-                                <th class="p-3">Pemohon</th>
-                                <th class="p-3">Bilik Khas</th>
-                                <th class="p-3">Tarikh / Masa</th>
-                                <th class="p-3">Tujuan / Program</th>
-                                <th class="p-3 text-center">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="jadualTableBody" class="divide-y divide-slate-100 text-slate-800">
-                            <!-- Dynamic Content -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 3: KALENDAR BULANAN -->
-        <div id="view-kalendar" class="tab-content hidden space-y-6">
-            <div class="glass-card rounded-3xl p-6 shadow-2xl border border-slate-200">
-                <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-4">
-                    <h2 class="font-extrabold text-slate-900 text-lg" id="calendarMonthTitle">Kalendar Tempahan</h2>
-                    <div class="flex items-center gap-2">
-                        <button onclick="changeCalendarMonth(-1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-700"><i class="fa-solid fa-chevron-left"></i></button>
-                        <button onclick="resetCalendarToToday()" class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-xl text-xs font-bold hover:bg-blue-100">Hari Ini</button>
-                        <button onclick="changeCalendarMonth(1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-700"><i class="fa-solid fa-chevron-right"></i></button>
+                    <!-- NAMA PEMOHON & TUJUAN -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Pemohon (Guru / Staf)</label>
+                            <input type="text" id="teacherName" required placeholder="Contoh: Cikgu Ahmad Faiz" class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">Kod PIN Pembatalan (3-Digit)</label>
+                            <input type="password" id="bookingPin" required maxlength="3" pattern="\d{3}" placeholder="Contoh: 123" class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        </div>
                     </div>
-                </div>
-                <div class="grid grid-cols-7 gap-1.5 text-center font-bold text-xs text-slate-600 mb-2">
-                    <div class="py-2 bg-slate-100 rounded-lg">Ahad</div>
-                    <div class="py-2 bg-slate-100 rounded-lg">Isnin</div>
-                    <div class="py-2 bg-slate-100 rounded-lg">Selasa</div>
-                    <div class="py-2 bg-slate-100 rounded-lg">Rabu</div>
-                    <div class="py-2 bg-slate-100 rounded-lg">Khamis</div>
-                    <div class="py-2 bg-slate-100 rounded-lg">Jumaat</div>
-                    <div class="py-2 bg-slate-100 rounded-lg">Sabtu</div>
-                </div>
-                <div id="monthlyCalendarGrid" class="grid grid-cols-7 gap-1.5">
-                    <!-- Dynamic Grid -->
-                </div>
-            </div>
-        </div>
 
-        <!-- TAB 4: PANEL KAWALAN ADMIN -->
-        <div id="view-admin" class="tab-content hidden space-y-6">
-            <div class="glass-card rounded-3xl p-6 shadow-2xl border border-slate-200 space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-200 pb-4">
                     <div>
-                        <h2 class="font-extrabold text-slate-900 text-lg">Panel Pentadbiran E-Bilik SKUSES</h2>
-                        <p class="text-xs text-slate-500">Pengurusan rekod tempahan & integrasi Google Sheets.</p>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Tujuan / Program</label>
+                        <input type="text" id="purpose" required placeholder="Contoh: Taklimat SPM / Bengkel Teknik Menjawab" class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="exportDataCSV()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
-                            <i class="fa-solid fa-file-excel"></i> Eksport CSV
-                        </button>
-                        <button onclick="logoutAdmin()" class="px-3.5 py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-xl text-xs font-bold transition">
-                            Log Keluar
-                        </button>
-                    </div>
-                </div>
 
-                <!-- SETTINGS: GOOGLE SHEETS WEB APP URL -->
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
-                    <h3 class="font-bold text-xs uppercase text-slate-700 tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-link text-blue-600"></i> Pautan Integrasi Google Sheets Web App
+                    <!-- JENIS TEMPAHAN -->
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Mod Tempahan</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button type="button" id="typeJamBtn" onclick="setBookingType('jam')" class="py-2 px-4 rounded-lg font-medium border text-sm transition text-center bg-indigo-600 text-white border-indigo-600">
+                                Tempahan Jam (1 Hari)
+                            </button>
+                            <button type="button" id="typeHariBtn" onclick="setBookingType('hari')" class="py-2 px-4 rounded-lg font-medium border text-sm transition text-center bg-slate-100 text-slate-700 border-slate-300">
+                                Tempahan > 1 Hari
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- MODE JAM INPUTS -->
+                    <div id="singleDaySection" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">Tarikh Tempahan</label>
+                            <input type="date" id="singleDate" class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-1">Masa Mula</label>
+                                <input type="time" id="singleStartTime" class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none" value="08:00">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-1">Masa Tamat</label>
+                                <input type="time" id="singleEndTime" class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none" value="10:00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MODE > 1 HARI INPUTS -->
+                    <div id="multiDaySection" class="hidden space-y-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Pilih Tarikh-Tarikh Tempahan</label>
+                        <div class="flex gap-2 mb-2">
+                            <input type="date" id="multiDateInput" class="border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                            <button type="button" onclick="addMultiDate()" class="bg-indigo-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition">
+                                + Tambah Tarikh
+                            </button>
+                        </div>
+
+                        <!-- LIST TARIKH DIPIILIK DENGAN CUSTOM TIME -->
+                        <div id="selectedDaysContainer" class="space-y-3 mt-3">
+                            <p class="text-xs text-slate-500 italic">Sila pilih sekurang-kurangnya satu tarikh.</p>
+                        </div>
+
+                        <div id="copyTimeBtnContainer" class="hidden pt-2">
+                            <button type="button" onclick="syncAllMultiTimes()" class="text-xs bg-emerald-600 text-white px-3 py-1.5 rounded hover:bg-emerald-700 transition font-medium flex items-center gap-1">
+                                <i class="fas fa-copy"></i> Sama Masa Semua Tarikh
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- BUTTON HANTAR -->
+                    <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg shadow-md transition flex items-center justify-center gap-2">
+                        <i class="fas fa-paper-plane"></i> Hantar Tempahan
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: REKOD & STATUS LIVE -->
+        <div class="space-y-6">
+            <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200">
+                <div class="flex justify-between items-center mb-3 pb-2 border-b">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-list-alt text-indigo-600"></i> Rekod Tempahan
                     </h3>
-                    <div class="flex gap-2">
-                        <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="flex-grow px-3.5 py-2 text-xs bg-white border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-600 font-mono text-slate-900">
-                        <button onclick="saveGasUrl()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow">Simpan Pautan</button>
-                    </div>
-                    <p class="text-[11px] text-slate-500">Masukkan URL Apps Script Web App untuk auto-sync rekod tempahan ke Google Sheets secara automatik.</p>
+                    <span id="syncBadge" class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live Auto-Sync
+                    </span>
                 </div>
 
-                <!-- ADMIN TABLE -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead>
-                            <tr class="bg-slate-900 text-white font-bold uppercase text-[10px] tracking-wider">
-                                <th class="p-3">ID</th>
-                                <th class="p-3">Pemohon</th>
-                                <th class="p-3">Bilik</th>
-                                <th class="p-3">Tarikh & Masa</th>
-                                <th class="p-3">PIN</th>
-                                <th class="p-3">Status</th>
-                                <th class="p-3 text-center">Tindakan Admin</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminTableBody" class="divide-y divide-slate-200 text-slate-800">
-                            <!-- Dynamic Content -->
-                        </tbody>
-                    </table>
+                <div id="bookingsList" class="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar pr-1">
+                    <p class="text-center text-slate-400 text-sm py-8">Memuatkan data tempahan...</p>
                 </div>
             </div>
         </div>
 
     </main>
 
-    <!-- FOOTER -->
-    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
-            <p class="font-semibold text-slate-300">E-BILIK KHAS SKUSES &copy; 2026 • SMK Seri Kundang</p>
-            <p class="text-slate-500 text-[11px]">Sistem Pengurusan Tempahan Bilik Khas & Integrasi Tempahan Kunci Sekolah.</p>
-        </div>
-    </footer>
-
-    <!-- MODAL 1: NOTIFIKASI TELEGRAM -->
-    <div id="telegramModal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 modal-backdrop">
-        <div class="glass-card bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200 space-y-5">
-            
-            <div class="text-center space-y-2">
-                <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl shadow-inner">
-                    <i class="fa-solid fa-circle-check"></i>
-                </div>
-                <h3 class="text-xl font-extrabold text-slate-900">Tempahan Berjaya Dihantar!</h3>
-                <p class="text-xs text-slate-500">Sila salin mesej di bawah untuk dihantar ke Group Telegram E-Skuses - Tempahan Bilik.</p>
+    <!-- MODAL TELEGRAM MESEJ -->
+    <div id="telegramModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-lg font-bold text-indigo-900 flex items-center gap-2">
+                    <i class="fab fa-telegram text-sky-500 text-2xl"></i> Mesej Telegram
+                </h3>
+                <button onclick="closeTelegramModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
             </div>
 
-            <!-- TELEGRAM FORMATTED BOX -->
-            <div class="bg-slate-900 text-emerald-400 p-4 rounded-2xl font-mono text-xs leading-relaxed border border-slate-800">
-                <pre id="telegramMessageText" class="whitespace-pre-wrap break-words font-mono text-xs"></pre>
-            </div>
+            <p class="text-xs font-semibold text-indigo-800 bg-indigo-50 p-2.5 rounded border border-indigo-200">
+                1. Sila salin mesej di bawah untuk dihantar ke Group Telegram E-Skuses - Tempahan Bilik.
+            </p>
 
-            <!-- ACTION BUTTONS -->
-            <div class="space-y-2.5">
-                <button onclick="copyTelegramMessage()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm transition shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-copy"></i> Salin Mesej Telegram
+            <textarea id="telegramMessageText" readonly class="w-full h-40 border border-slate-300 rounded-lg p-3 text-xs font-mono bg-slate-50 focus:outline-none"></textarea>
+
+            <div class="flex gap-3">
+                <button onclick="copyTelegramMessage()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg transition flex items-center justify-center gap-2 text-sm">
+                    <i class="fas fa-copy"></i> Salin Mesej Telegram
                 </button>
-                <a href="https://forms.gle/bQA9qQcUrgMUpfuD7" target="_blank" rel="noopener noreferrer" 
-                   class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl text-xs transition flex items-center justify-center gap-2 border border-amber-400">
-                    <i class="fa-solid fa-key"></i> Buka Pautan Tempahan Kunci (Google Form)
-                </a>
-                <button onclick="closeTelegramModal()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition">
-                    Tutup & Kembali
+                <button onclick="closeTelegramModal()" class="px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-lg transition text-sm">
+                    Tutup
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 2: LOG MASUK ADMIN -->
-    <div id="adminLoginModal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 modal-backdrop">
-        <div class="glass-card bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-200 pb-3">
-                <h3 class="font-extrabold text-slate-900 text-base">Log Masuk Admin</h3>
-                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <!-- MODAL LOG MASUK ADMIN -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-lg font-bold text-indigo-900 flex items-center gap-2">
+                    <i class="fas fa-user-shield text-indigo-600"></i> Log Masuk Admin
+                </h3>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
             </div>
-            <form onsubmit="handleAdminLogin(event)" class="space-y-3">
-                <div>
-                    <label class="text-xs font-bold text-slate-700">ID Pengguna Admin</label>
-                    <input type="text" id="adminUser" required class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-300 text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-blue-600">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-slate-700">Kata Laluan</label>
-                    <input type="password" id="adminPass" required class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-300 text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-blue-600">
-                </div>
-                <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition">
-                    Log Masuk
-                </button>
-            </form>
-        </div>
-    </div>
 
-    <!-- MODAL 3: MODAL PENGESAHAN (CUSTOM CONFIRMATION) -->
-    <div id="confirmModal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 modal-backdrop">
-        <div class="glass-card bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 space-y-4 text-center">
-            <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-xl shadow-inner">
-                <i class="fa-solid fa-triangle-exclamation"></i>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Kata Laluan Admin</label>
+                    <input type="password" id="adminPassInput" placeholder="Masukkan kata laluan" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">URL Web App Google Apps Script</label>
+                    <input type="url" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs font-mono outline-none focus:ring-2 focus:ring-indigo-500">
+                    <p class="text-[10px] text-slate-500 mt-1">Sila masukkan Web App Exec URL bagi penyinkronan Google Sheet.</p>
+                </div>
             </div>
-            <div>
-                <h3 id="confirmModalTitle" class="text-base font-extrabold text-slate-900">Pengesahan Tindakan</h3>
-                <p id="confirmModalMessage" class="text-xs text-slate-500 mt-1.5 leading-relaxed">Adakah anda pasti untuk meneruskan tindakan ini?</p>
-            </div>
-            <div class="flex items-center gap-2 pt-2">
-                <button onclick="closeConfirmModal(false)" class="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition">
+
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeAdminModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-medium text-xs">
                     Batal
                 </button>
-                <button id="confirmModalActionBtn" onclick="closeConfirmModal(true)" class="w-1/2 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow transition">
-                    Ya, Teruskan
+                <button onclick="processAdminLogin()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-xs">
+                    Log Masuk
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- TOAST CONTAINER -->
-    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+    <!-- MODAL PANEL ADMIN -->
+    <div id="adminPanelModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full p-6 space-y-4 max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-lg font-bold text-indigo-900 flex items-center gap-2">
+                    <i class="fas fa-tools text-indigo-600"></i> Panel Kawalan Admin
+                </h3>
+                <button onclick="closeAdminPanel()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+
+            <div class="overflow-x-auto flex-grow custom-scrollbar">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-indigo-900 text-white">
+                            <th class="p-2.5">ID</th>
+                            <th class="p-2.5">Pemohon</th>
+                            <th class="p-2.5">Bilik</th>
+                            <th class="p-2.5">Tarikh & Masa</th>
+                            <th class="p-2.5">Status</th>
+                            <th class="p-2.5 text-center">Tindakan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody" class="divide-y divide-slate-200">
+                        <!-- Admin rows loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex justify-between items-center pt-3 border-t">
+                <span id="adminTotalRecords" class="text-xs text-slate-500">Jumlah: 0 Rekod</span>
+                <button onclick="closeAdminPanel()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-bold text-xs">
+                    Tutup Panel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PENGESAHAN TERSUAI (CUSTOM CONFIRM MODAL) -->
+    <div id="confirmModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full p-5 space-y-3">
+            <h4 id="confirmTitle" class="font-bold text-slate-800 text-base">Pengesahan Tindakan</h4>
+            <p id="confirmMessage" class="text-sm text-slate-600">Adakah anda pasti untuk meneruskan tindakan ini?</p>
+            <div class="flex justify-end gap-2 pt-2">
+                <button id="confirmCancelBtn" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-medium text-xs">Batal</button>
+                <button id="confirmOkBtn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold text-xs">Ya, Padam</button>
+            </div>
+        </div>
+    </div>
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        const STORAGE_KEY = 'ebilik_skuses_data_v6';
-        const GAS_URL_KEY = 'ebilik_skuses_gas_url';
-        const ROOM_LIST = [
-            'Aula Inspirasi', 'Dewan Gemilang', 'Bilik MBMMBI', 'Bilik APD',
-            'Makmal Komputer 1', 'Makmal Komputer 2', 'PSS D Anggerik', 'Bilik Intelek'
-        ];
+        // GLOBAL VARIABLES
+        let bookings = JSON.parse(localStorage.getItem('ebilik_bookings')) || [];
+        let scriptUrl = localStorage.getItem('ebilik_script_url') || '';
+        let bookingType = 'jam';
+        let multiDays = [];
+        let confirmCallback = null;
 
-        let bookings = [];
-        let isAdminLoggedIn = false;
-        let selectedMultiDays = [];
-        let selectedDayTimes = {}; // Stores { 'YYYY-MM-DD': { startTime: '08:00', endTime: '17:00' } }
-        let calendarCurrentDate = new Date();
-        let multiPickerDate = new Date();
+        // INIT APP
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set tarikh minimum hari ini
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('singleDate').value = today;
+            document.getElementById('singleDate').min = today;
+            document.getElementById('multiDateInput').min = today;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadInitialData();
-            setupMinDateRestriction();
-            renderLiveBadges();
-            renderMultiDayCalendar();
-            renderJadualView();
-            renderMonthlyCalendar();
+            if (scriptUrl) {
+                document.getElementById('scriptUrlInput').value = scriptUrl;
+            }
+
+            renderAll();
+            loadBookingsFromGS();
+
+            // Set LIVE AUTO-SYNC setiap 10 saat
+            setInterval(loadBookingsFromGS, 10000);
         });
 
-        function setupMinDateRestriction() {
-            const todayStr = new Date().toISOString().split('T')[0];
-            const singleDateInput = document.getElementById('singleDate');
-            if (singleDateInput) {
-                singleDateInput.min = todayStr;
-                singleDateInput.value = todayStr;
-            }
-        }
+        // SET BOOKING TYPE (JAM / HARI)
+        function setBookingType(type) {
+            bookingType = type;
+            const jamBtn = document.getElementById('typeJamBtn');
+            const hariBtn = document.getElementById('typeHariBtn');
+            const singleSec = document.getElementById('singleDaySection');
+            const multiSec = document.getElementById('multiDaySection');
 
-        function loadInitialData() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                try {
-                    bookings = JSON.parse(saved);
-                } catch (e) {
-                    bookings = [];
-                }
-            } else {
-                bookings = [
-                    {
-                        id: 'BK-1001',
-                        teacher: 'Cikgu Noraini',
-                        room: 'Aula Inspirasi',
-                        type: 'jam',
-                        date: new Date().toISOString().split('T')[0],
-                        startTime: '08:00',
-                        endTime: '10:00',
-                        purpose: 'Taklimat Kejohanan Olahraga Sekolah',
-                        pin: '123',
-                        status: 'Aktif',
-                        createdAt: new Date().toISOString()
-                    }
-                ];
-                saveData();
-            }
-
-            const savedGasUrl = localStorage.getItem(GAS_URL_KEY);
-            if (savedGasUrl && document.getElementById('gasUrlInput')) {
-                document.getElementById('gasUrlInput').value = savedGasUrl;
-            }
-        }
-
-        function saveData() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('border-blue-500', 'text-blue-400', 'font-bold', 'bg-slate-900/50');
-                el.classList.add('border-transparent', 'text-slate-400', 'font-semibold');
-            });
-
-            const targetView = document.getElementById(`view-${tabId}`);
-            const targetTabBtn = document.getElementById(`tab-${tabId}`);
-            if (targetView) targetView.classList.remove('hidden');
-            if (targetTabBtn) {
-                targetTabBtn.classList.add('border-blue-500', 'text-blue-400', 'font-bold', 'bg-slate-900/50');
-                targetTabBtn.classList.remove('border-transparent', 'text-slate-400');
-            }
-
-            if (tabId === 'jadual') renderJadualView();
-            if (tabId === 'kalendar') renderMonthlyCalendar();
-            if (tabId === 'admin') renderAdminView();
-        }
-
-        function toggleBookingType(type) {
-            const singleContainer = document.getElementById('singleDateContainer');
-            const multiContainer = document.getElementById('multiDateContainer');
             if (type === 'jam') {
-                singleContainer.classList.remove('hidden');
-                multiContainer.classList.add('hidden');
+                jamBtn.className = 'py-2 px-4 rounded-lg font-medium border text-sm transition text-center bg-indigo-600 text-white border-indigo-600';
+                hariBtn.className = 'py-2 px-4 rounded-lg font-medium border text-sm transition text-center bg-slate-100 text-slate-700 border-slate-300';
+                singleSec.classList.remove('hidden');
+                multiSec.classList.add('hidden');
             } else {
-                singleContainer.classList.add('hidden');
-                multiContainer.classList.remove('hidden');
+                hariBtn.className = 'py-2 px-4 rounded-lg font-medium border text-sm transition text-center bg-indigo-600 text-white border-indigo-600';
+                jamBtn.className = 'py-2 px-4 rounded-lg font-medium border text-sm transition text-center bg-slate-100 text-slate-700 border-slate-300';
+                multiSec.classList.remove('hidden');
+                singleSec.classList.add('hidden');
             }
         }
 
-        function changeMultiPickerMonth(delta) {
-            const today = new Date();
-            const targetMonth = new Date(multiPickerDate.getFullYear(), multiPickerDate.getMonth() + delta, 1);
-            
-            // Limit navigation so user cannot go back to past months
-            if (targetMonth.getFullYear() < today.getFullYear() || 
-               (targetMonth.getFullYear() === today.getFullYear() && targetMonth.getMonth() < today.getMonth())) {
+        // MULTI-DAY MANAGEMENT
+        function addMultiDate() {
+            const dateInput = document.getElementById('multiDateInput');
+            const val = dateInput.value;
+            if (!val) return;
+
+            if (multiDays.some(d => d.date === val)) {
+                alert("Tarikh ini telah ditambah.");
                 return;
             }
-            
-            multiPickerDate = targetMonth;
-            renderMultiDayCalendar();
+
+            multiDays.push({
+                date: val,
+                startTime: '08:00',
+                endTime: '14:00'
+            });
+
+            multiDays.sort((a, b) => new Date(a.date) - new Date(b.date));
+            dateInput.value = '';
+            renderMultiDaysList();
         }
 
-        function renderMultiDayCalendar() {
-            const container = document.getElementById('multiDayCalendarGrid');
-            const title = document.getElementById('multiPickerMonthTitle');
-            const prevBtn = document.getElementById('prevMultiMonthBtn');
-            if (!container) return;
+        function removeMultiDate(index) {
+            multiDays.splice(index, 1);
+            renderMultiDaysList();
+        }
 
-            const today = new Date();
-            today.setHours(0,0,0,0);
+        function updateMultiTime(index, field, value) {
+            if (multiDays[index]) {
+                multiDays[index][field] = value;
+            }
+        }
 
-            const year = multiPickerDate.getFullYear();
-            const month = multiPickerDate.getMonth();
+        function syncAllMultiTimes() {
+            if (multiDays.length === 0) return;
+            const firstStart = multiDays[0].startTime;
+            const firstEnd = multiDays[0].endTime;
 
-            if (title) {
-                title.innerText = multiPickerDate.toLocaleDateString('ms-MY', { month: 'short', year: 'numeric' });
+            multiDays.forEach(d => {
+                d.startTime = firstStart;
+                d.endTime = firstEnd;
+            });
+            renderMultiDaysList();
+        }
+
+        function renderMultiDaysList() {
+            const container = document.getElementById('selectedDaysContainer');
+            const copyContainer = document.getElementById('copyTimeBtnContainer');
+
+            if (multiDays.length === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-500 italic">Sila pilih sekurang-kurangnya satu tarikh.</p>';
+                copyContainer.classList.add('hidden');
+                return;
             }
 
-            if (prevBtn) {
-                const isCurrentMonth = year === today.getFullYear() && month === today.getMonth();
-                prevBtn.disabled = isCurrentMonth;
+            copyContainer.classList.remove('hidden');
+            container.innerHTML = multiDays.map((item, idx) => `
+                <div class="bg-white p-3 rounded-lg border border-slate-300 space-y-2 text-xs shadow-sm">
+                    <div class="flex justify-between items-center border-b pb-1">
+                        <span class="font-bold text-indigo-900"><i class="fas fa-calendar-day"></i> ${item.date}</span>
+                        <button type="button" onclick="removeMultiDate(${idx})" class="text-red-500 hover:text-red-700 font-bold">&times; Buang</button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-slate-600 mb-0.5">Masa Mula</label>
+                            <input type="time" value="${item.startTime}" onchange="updateMultiTime(${idx}, 'startTime', this.value)" class="w-full border border-slate-300 rounded p-1 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-slate-600 mb-0.5">Masa Tamat</label>
+                            <input type="time" value="${item.endTime}" onchange="updateMultiTime(${idx}, 'endTime', this.value)" class="w-full border border-slate-300 rounded p-1 text-xs">
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // FETCH LIVE DATA FROM GOOGLE SHEET
+        async function loadBookingsFromGS() {
+            scriptUrl = localStorage.getItem('ebilik_script_url') || scriptUrl;
+            const badge = document.getElementById('syncBadge');
+
+            if (!scriptUrl) {
+                if (badge) badge.className = "text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-medium";
+                if (badge) badge.innerHTML = "Offline Mode";
+                return;
             }
 
-            container.innerHTML = '';
-
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-            // Empty slots for previous month padding
-            for (let i = 0; i < firstDay; i++) {
-                container.innerHTML += `<div class="p-1"></div>`;
-            }
-
-            // Month days
-            for (let d = 1; d <= daysInMonth; d++) {
-                const cellDate = new Date(year, month, d);
-                cellDate.setHours(0,0,0,0);
-                
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                
-                const isPast = cellDate < today;
-                const isSelected = selectedMultiDays.includes(dateStr);
-
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                
-                if (isPast) {
-                    btn.className = 'p-1.5 text-center rounded-xl font-medium text-xs bg-slate-100 text-slate-300 border border-slate-200 cursor-not-allowed opacity-40 flex items-center justify-center min-h-[36px]';
-                    btn.disabled = true;
-                    btn.innerHTML = `<span>${d}</span>`;
-                } else {
-                    btn.className = `p-1.5 text-center rounded-xl font-bold text-xs border transition flex items-center justify-center min-h-[36px] ${
-                        isSelected 
-                            ? 'bg-blue-600 text-white border-blue-600 shadow-md' 
-                            : 'bg-white text-slate-800 border-slate-300 hover:bg-blue-50 hover:border-blue-300'
-                    }`;
-                    btn.onclick = () => toggleMultiDaySelect(dateStr);
-                    btn.innerHTML = `<span>${d}</span>`;
+            try {
+                const res = await fetch(scriptUrl);
+                const data = await res.json();
+                if (data.result === 'success' && Array.isArray(data.bookings)) {
+                    bookings = data.bookings;
+                    localStorage.setItem('ebilik_bookings', JSON.stringify(bookings));
+                    renderAll();
+                    if (badge) {
+                        badge.className = "text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-medium flex items-center gap-1";
+                        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live Auto-Sync';
+                    }
                 }
-                
-                container.appendChild(btn);
+            } catch (e) {
+                console.warn("Ralat sync Google Sheet:", e);
+                if (badge) {
+                    badge.className = "text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium";
+                    badge.innerHTML = "Cache Tempatan";
+                }
             }
-            renderMultiDayBadges();
         }
 
-        function toggleMultiDaySelect(dateStr) {
-            const index = selectedMultiDays.indexOf(dateStr);
-            if (index > -1) {
-                selectedMultiDays.splice(index, 1);
-                delete selectedDayTimes[dateStr];
+        // SUBMIT FORM
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+            const room = document.getElementById('roomSelect').value;
+            const teacher = document.getElementById('teacherName').value.trim();
+            const pin = document.getElementById('bookingPin').value.trim();
+            const purpose = document.getElementById('purpose').value.trim();
+            const id = 'BK-' + Math.floor(1000 + Math.random() * 9000);
+
+            let newBooking = {
+                id: id,
+                room: room,
+                teacher: teacher,
+                pin: pin,
+                purpose: purpose,
+                type: bookingType,
+                status: 'Aktif'
+            };
+
+            if (bookingType === 'jam') {
+                newBooking.date = document.getElementById('singleDate').value;
+                newBooking.startTime = document.getElementById('singleStartTime').value;
+                newBooking.endTime = document.getElementById('singleEndTime').value;
             } else {
-                if (selectedMultiDays.length >= 5) {
-                    showToast('Maksimum pilihan 5 hari sahaja.', 'error');
+                if (multiDays.length === 0) {
+                    alert("Sila pilih sekurang-kurangnya 1 tarikh untuk tempahan > 1 hari.");
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Hantar Tempahan';
                     return;
                 }
-                selectedMultiDays.push(dateStr);
-                selectedDayTimes[dateStr] = { startTime: '08:00', endTime: '17:00' };
+                newBooking.selectedDays = JSON.parse(JSON.stringify(multiDays));
             }
-            selectedMultiDays.sort();
-            renderMultiDayCalendar();
-            renderMultiDayTimeInputs();
-        }
 
-        function applyFirstTimeToAll() {
-            if (selectedMultiDays.length === 0) return;
-            const firstDate = selectedMultiDays[0];
-            const firstTimes = selectedDayTimes[firstDate] || { startTime: '08:00', endTime: '17:00' };
+            // SIMPAN TEMPATAN & HANTAR KE GOOGLE SHEET
+            bookings.unshift(newBooking);
+            localStorage.setItem('ebilik_bookings', JSON.stringify(bookings));
+            renderAll();
 
-            selectedMultiDays.forEach(d => {
-                selectedDayTimes[d] = { startTime: firstTimes.startTime, endTime: firstTimes.endTime };
-            });
-
-            renderMultiDayTimeInputs();
-            showToast('Masa tarikh pertama disalin ke semua tarikh pilihan.', 'success');
-        }
-
-        function updateMultiDayTime(dateStr, field, value) {
-            if (!selectedDayTimes[dateStr]) {
-                selectedDayTimes[dateStr] = { startTime: '08:00', endTime: '17:00' };
+            if (scriptUrl) {
+                try {
+                    await fetch(scriptUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'payload=' + encodeURIComponent(JSON.stringify({
+                            action: 'addBooking',
+                            booking: newBooking
+                        }))
+                    });
+                } catch (err) {
+                    console.error("Gagal hantar ke Google Sheet:", err);
+                }
             }
-            selectedDayTimes[dateStr][field] = value;
+
+            // POPUP TELEGRAM MESSAGE
+            showTelegramModal(newBooking);
+
+            // RESET FORM
+            document.getElementById('bookingForm').reset();
+            multiDays = [];
+            renderMultiDaysList();
+            setBookingType('jam');
+            
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Hantar Tempahan';
+
+            setTimeout(loadBookingsFromGS, 1500);
         }
 
-        function renderMultiDayTimeInputs() {
-            const container = document.getElementById('multiDayTimeInputsContainer');
-            const timeList = document.getElementById('multiDayTimeList');
-            if (!container || !timeList) return;
+        // TELEGRAM MODAL & COPY FIX
+        function showTelegramModal(b) {
+            let detailTarikh = '';
+            if (b.type === 'jam') {
+                detailTarikh = `📅 Tarikh: ${b.date}\n⏰ Masa: ${b.startTime} - ${b.endTime}`;
+            } else {
+                const datesStr = b.selectedDays.map(d => `${d.date} (${d.startTime}-${d.endTime})`).join('\n  • ');
+                detailTarikh = `📅 Tarikh & Masa (>1 Hari):\n  • ${datesStr}`;
+            }
 
-            if (selectedMultiDays.length === 0) {
-                container.classList.add('hidden');
-                timeList.innerHTML = '';
+            const msg = `📌 TEMPAHAN BILIK KHAS SKUSES\n--------------------------------\n🆔 ID: ${b.id}\n🏫 Bilik: ${b.room}\n👤 Pemohon: ${b.teacher}\n🎯 Tujuan: ${b.purpose}\n${detailTarikh}\n--------------------------------\nSila pastikan borang tempahan kunci diambil di pejabat. Terima kasih.`;
+
+            document.getElementById('telegramMessageText').value = msg;
+            document.getElementById('telegramModal').classList.remove('hidden');
+        }
+
+        function closeTelegramModal() {
+            document.getElementById('telegramModal').classList.add('hidden');
+        }
+
+        function copyTelegramMessage() {
+            const textarea = document.getElementById('telegramMessageText');
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    alert("Mesej berjaya disalin! Sila hantar ke Group Telegram.");
+                } else {
+                    alert("Gagal menyalin secara automatik. Sila tekan lama pada teks dan salin secara manual.");
+                }
+            } catch (err) {
+                alert("Gagal menyalin secara automatik. Sila salin teks secara manual.");
+            }
+        }
+
+        // RENDER BOOKINGS LIST
+        function renderAll() {
+            renderBookingsList();
+            renderAdminTable();
+        }
+
+        function renderBookingsList() {
+            const container = document.getElementById('bookingsList');
+            const activeBookings = bookings.filter(b => b.status === 'Aktif');
+
+            if (activeBookings.length === 0) {
+                container.innerHTML = '<p class="text-center text-slate-400 text-sm py-8">Tiada tempahan aktif buat masa ini.</p>';
                 return;
             }
 
-            container.classList.remove('hidden');
-            timeList.innerHTML = selectedMultiDays.map(dateStr => {
-                const times = selectedDayTimes[dateStr] || { startTime: '08:00', endTime: '17:00' };
-                const formattedDate = formatDateMalay(dateStr);
+            container.innerHTML = activeBookings.map(b => {
+                let timeInfo = '';
+                if (b.type === 'jam') {
+                    timeInfo = `<div class="text-xs font-semibold text-indigo-700 mt-1"><i class="far fa-clock"></i> ${b.date} | ${b.startTime} - ${b.endTime}</div>`;
+                } else if (b.selectedDays) {
+                    const daysList = b.selectedDays.map(d => `${d.date} (${d.startTime}-${d.endTime})`).join(', ');
+                    timeInfo = `<div class="text-xs font-semibold text-indigo-700 mt-1"><i class="far fa-clock"></i> ${daysList}</div>`;
+                }
 
                 return `
-                    <div class="p-2.5 bg-white border border-slate-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shadow-sm">
-                        <div class="font-bold text-slate-800 flex items-center gap-1.5">
-                            <i class="fa-solid fa-calendar-day text-blue-500"></i> ${formattedDate}
+                    <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 hover:border-indigo-300 transition shadow-sm space-y-1">
+                        <div class="flex justify-between items-start">
+                            <span class="font-bold text-slate-800 text-sm">${b.room}</span>
+                            <span class="text-[10px] bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded">${b.id}</span>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <div class="flex items-center gap-1">
-                                <span class="text-[10px] font-bold text-slate-500 uppercase">Mula:</span>
-                                <input type="time" value="${times.startTime}" onchange="updateMultiDayTime('${dateStr}', 'startTime', this.value)" 
-                                       class="px-2 py-1 bg-slate-50 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-blue-600 text-xs font-semibold">
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <span class="text-[10px] font-bold text-slate-500 uppercase">Tamat:</span>
-                                <input type="time" value="${times.endTime}" onchange="updateMultiDayTime('${dateStr}', 'endTime', this.value)" 
-                                       class="px-2 py-1 bg-slate-50 border border-slate-300 rounded-lg outline-none focus:ring-1 focus:ring-blue-600 text-xs font-semibold">
-                            </div>
+                        <div class="text-xs text-slate-600"><i class="far fa-user"></i> ${b.teacher}</div>
+                        <div class="text-xs text-slate-500 italic"><i class="fas fa-bullseye"></i> ${b.purpose}</div>
+                        ${timeInfo}
+                        <div class="pt-2 flex justify-end">
+                            <button onclick="promptCancelBooking('${b.id}')" class="text-[11px] bg-red-100 hover:bg-red-200 text-red-700 font-semibold px-2.5 py-1 rounded transition">
+                                <i class="fas fa-times-circle"></i> Batalkan
+                            </button>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        function renderMultiDayBadges() {
-            const badgeContainer = document.getElementById('selectedMultiDaysBadge');
-            if (!badgeContainer) return;
-            badgeContainer.innerHTML = selectedMultiDays.map(d => `
-                <span class="inline-flex items-center gap-1 bg-blue-100 text-blue-900 font-bold px-2.5 py-1 rounded-lg text-xs">
-                    ${formatDateMalay(d)} <i class="fa-solid fa-xmark cursor-pointer hover:text-red-600" onclick="toggleMultiDaySelect('${d}')"></i>
-                </span>
-            `).join('');
-        }
+        // CANCEL BOOKING BY USER
+        function promptCancelBooking(id) {
+            const pin = prompt("Sila masukkan Kod PIN 3-Digit anda untuk pembatalan:");
+            if (!pin) return;
 
-        function checkConflict(room, date, startTime, endTime, excludeId = null) {
-            return bookings.some(b => {
-                if (b.status === 'Dibatalkan') return false;
-                if (excludeId && b.id === excludeId) return false;
-                if (b.room !== room) return false;
+            const idx = bookings.findIndex(b => b.id === id);
+            if (idx !== -1) {
+                if (bookings[idx].pin === pin.trim()) {
+                    showConfirmModal("Batal Tempahan", "Adakah anda pasti untuk membatalkan tempahan ini?", async function() {
+                        bookings[idx].status = 'Dibatalkan';
+                        localStorage.setItem('ebilik_bookings', JSON.stringify(bookings));
+                        renderAll();
 
-                if (b.type === 'jam') {
-                    if (b.date !== date) return false;
-                    return (startTime < b.endTime && endTime > b.startTime);
-                } else if (b.type === 'hari') {
-                    if (!b.selectedDays || !b.selectedDays.includes(date)) return false;
-                    
-                    let bStart = '00:00';
-                    let bEnd = '23:59';
-                    if (b.dayTimes && b.dayTimes[date]) {
-                        bStart = b.dayTimes[date].startTime || '00:00';
-                        bEnd = b.dayTimes[date].endTime || '23:59';
-                    }
-                    return (startTime < bEnd && endTime > bStart);
-                }
-                return false;
-            });
-        }
-
-        async function handleBookingSubmit(e) {
-            e.preventDefault();
-
-            const teacher = document.getElementById('teacherName').value.trim();
-            const room = document.getElementById('roomSelect').value;
-            const type = document.querySelector('input[name="bookingType"]:checked').value;
-            const purpose = document.getElementById('bookingPurpose').value.trim();
-            const pin = document.getElementById('userPin').value.trim();
-
-            if (!teacher || !room || !purpose || pin.length !== 3) {
-                showToast('Sila isi maklumat borang dengan lengkap.', 'error');
-                return;
-            }
-
-            let newBooking = {
-                id: 'BK-' + Math.floor(1000 + Math.random() * 9000),
-                teacher,
-                room,
-                type,
-                purpose,
-                pin,
-                status: 'Aktif',
-                createdAt: new Date().toISOString()
-            };
-
-            if (type === 'jam') {
-                const date = document.getElementById('singleDate').value;
-                const startTime = document.getElementById('startTime').value;
-                const endTime = document.getElementById('endTime').value;
-
-                if (!date || !startTime || !endTime) {
-                    showToast('Sila tetapkan tarikh dan masa tempahan.', 'error');
-                    return;
-                }
-
-                if (startTime >= endTime) {
-                    showToast('Masa tamat mestilah selepas masa mula.', 'error');
-                    return;
-                }
-
-                if (checkConflict(room, date, startTime, endTime)) {
-                    showToast(`Bilik ${room} telah ditempah pada tarikh & masa tersebut!`, 'error');
-                    return;
-                }
-
-                newBooking.date = date;
-                newBooking.startTime = startTime;
-                newBooking.endTime = endTime;
-
-            } else {
-                if (selectedMultiDays.length === 0) {
-                    showToast('Sila pilih sekurang-kurangnya 1 tarikh.', 'error');
-                    return;
-                }
-
-                let dayTimesCopy = {};
-                for (let d of selectedMultiDays) {
-                    const times = selectedDayTimes[d] || { startTime: '08:00', endTime: '17:00' };
-                    if (!times.startTime || !times.endTime) {
-                        showToast(`Sila tetapkan masa mula dan masa tamat untuk tarikh ${formatDateMalay(d)}.`, 'error');
-                        return;
-                    }
-                    if (times.startTime >= times.endTime) {
-                        showToast(`Masa tamat mestilah selepas masa mula bagi tarikh ${formatDateMalay(d)}.`, 'error');
-                        return;
-                    }
-                    if (checkConflict(room, d, times.startTime, times.endTime)) {
-                        showToast(`Bertindih: Bilik ${room} sudah ditempah pada ${formatDateMalay(d)} (${times.startTime} - ${times.endTime}).`, 'error');
-                        return;
-                    }
-                    dayTimesCopy[d] = { startTime: times.startTime, endTime: times.endTime };
-                }
-
-                newBooking.selectedDays = [...selectedMultiDays];
-                newBooking.dayTimes = dayTimesCopy;
-                newBooking.startTime = 'Mengikut Tarikh';
-                newBooking.endTime = 'Mengikut Tarikh';
-            }
-
-            bookings.unshift(newBooking);
-            saveData();
-            syncToGoogleSheets(newBooking);
-
-            document.getElementById('bookingForm').reset();
-            selectedMultiDays = [];
-            selectedDayTimes = {};
-            setupMinDateRestriction();
-            renderMultiDayCalendar();
-            renderMultiDayTimeInputs();
-            renderLiveBadges();
-
-            openTelegramModal(newBooking);
-        }
-
-        function openTelegramModal(booking) {
-            let tarikhFormatted = '';
-            let masaFormatted = '';
-
-            if (booking.type === 'jam') {
-                tarikhFormatted = formatDateMalay(booking.date);
-                masaFormatted = `${booking.startTime} - ${booking.endTime}`;
-            } else {
-                let dayList = [];
-                if (booking.dayTimes) {
-                    booking.selectedDays.forEach(d => {
-                        const t = booking.dayTimes[d];
-                        dayList.push(`• ${formatDateMalay(d)}: ${t ? t.startTime + ' - ' + t.endTime : 'Sepanjang Hari'}`);
+                        if (scriptUrl) {
+                            fetch(scriptUrl, {
+                                method: 'POST',
+                                mode: 'no-cors',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: 'payload=' + encodeURIComponent(JSON.stringify({
+                                    action: 'cancelBooking',
+                                    id: id
+                                }))
+                            });
+                        }
+                        alert("Tempahan berjaya dibatalkan.");
+                        setTimeout(loadBookingsFromGS, 1500);
                     });
-                    tarikhFormatted = '\n' + dayList.join('\n');
-                    masaFormatted = 'Mengikut Tarikh Ditentukan';
                 } else {
-                    tarikhFormatted = booking.selectedDays.map(d => formatDateMalay(d)).join(', ');
-                    masaFormatted = 'Sepanjang Hari';
+                    alert("Kod PIN Salah!");
                 }
             }
-
-            const msg = `📍 Tempahan *${booking.room}*
-
-Masa : *${masaFormatted}*
-Tarikh : *${tarikhFormatted}*
-Nama Program : *${booking.purpose}*
-
-(Link bilik dan kunci juga telah diisi)`;
-
-            document.getElementById('telegramMessageText').innerText = msg;
-            document.getElementById('telegramModal').classList.remove('hidden');
         }
 
-        function closeTelegramModal() {
-            document.getElementById('telegramModal').classList.add('hidden');
-            showToast('Tempahan anda telah direkodkan!', 'success');
+        // ADMIN MODAL & ACTIONS
+        function openAdminModal() {
+            document.getElementById('adminLoginModal').classList.remove('hidden');
         }
 
-        function copyTelegramMessage() {
-            const textToCopy = document.getElementById('telegramMessageText').innerText;
-            
-            // Menggunakan teknik fallback textarea & document.execCommand('copy') untuk melepasi sekatan iFrame
-            const textarea = document.createElement('textarea');
-            textarea.value = textToCopy;
-            textarea.style.position = 'fixed';
-            textarea.style.left = '-9999px';
-            textarea.style.top = '-9999px';
-            document.body.appendChild(textarea);
-            textarea.focus();
-            textarea.select();
+        function closeAdminModal() {
+            document.getElementById('adminLoginModal').classList.add('hidden');
+        }
 
-            let isSuccessful = false;
-            try {
-                isSuccessful = document.execCommand('copy');
-            } catch (err) {
-                isSuccessful = false;
-            }
+        function processAdminLogin() {
+            const pass = document.getElementById('adminPassInput').value;
+            const urlVal = document.getElementById('scriptUrlInput').value.trim();
 
-            document.body.removeChild(textarea);
-
-            if (isSuccessful) {
-                showToast('Mesej berjaya disalin! Sila tampal ke Telegram.', 'success');
-            } else if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    showToast('Mesej berjaya disalin! Sila tampal ke Telegram.', 'success');
-                }).catch(() => {
-                    showToast('Gagal menyalin secara automatik. Sila salin teks secara manual.', 'error');
-                });
+            if (pass === 'admin123') { // KATA LALUAN DEFAULT ADMIN
+                if (urlVal) {
+                    scriptUrl = urlVal;
+                    localStorage.setItem('ebilik_script_url', urlVal);
+                }
+                closeAdminModal();
+                document.getElementById('adminPanelModal').classList.remove('hidden');
+                renderAdminTable();
+                loadBookingsFromGS();
             } else {
-                showToast('Gagal menyalin secara automatik. Sila salin teks secara manual.', 'error');
+                alert("Kata laluan Admin salah!");
             }
         }
 
-        async function syncToGoogleSheets(bookingData) {
-            const gasUrl = localStorage.getItem(GAS_URL_KEY);
-            if (!gasUrl) return;
-
-            try {
-                await fetch(gasUrl, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(bookingData)
-                });
-            } catch (err) {
-                console.error('Google Sheets Sync Error:', err);
-            }
+        function closeAdminPanel() {
+            document.getElementById('adminPanelModal').classList.add('hidden');
         }
 
-        function saveGasUrl() {
-            const url = document.getElementById('gasUrlInput').value.trim();
-            localStorage.setItem(GAS_URL_KEY, url);
-            showToast('Pautan Google Sheets Web App berjaya disimpan!', 'success');
-        }
+        function renderAdminTable() {
+            const tbody = document.getElementById('adminTableBody');
+            document.getElementById('adminTotalRecords').innerText = `Jumlah: ${bookings.length} Rekod`;
 
-        function renderLiveBadges() {
-            const container = document.getElementById('liveBadgesContainer');
-            if (!container) return;
-            const todayStr = new Date().toISOString().split('T')[0];
-
-            container.innerHTML = ROOM_LIST.map(room => {
-                const isBooked = bookings.some(b => {
-                    if (b.status === 'Dibatalkan' || b.room !== room) return false;
-                    if (b.type === 'jam') return b.date === todayStr;
-                    return b.selectedDays && b.selectedDays.includes(todayStr);
-                });
-
-                return `
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold ${
-                        isBooked 
-                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40' 
-                            : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                    }">
-                        <span class="w-2 h-2 rounded-full ${isBooked ? 'bg-rose-400' : 'bg-emerald-400'}"></span>
-                        ${room}: <strong class="${isBooked ? 'text-rose-200' : 'text-emerald-200'}">${isBooked ? 'Terdapat Tempahan' : 'Kosong'}</strong>
-                    </span>
-                `;
-            }).join('');
-        }
-
-        function renderJadualView() {
-            const tbody = document.getElementById('jadualTableBody');
-            if (!tbody) return;
-
-            const searchVal = (document.getElementById('searchJadual')?.value || '').toLowerCase();
-            const filterRoom = document.getElementById('filterRoom')?.value || 'ALL';
-
-            let filtered = bookings.filter(b => {
-                const matchSearch = b.teacher.toLowerCase().includes(searchVal) || b.purpose.toLowerCase().includes(searchVal) || b.id.toLowerCase().includes(searchVal);
-                const matchRoom = filterRoom === 'ALL' || b.room === filterRoom;
-                return matchSearch && matchRoom;
-            });
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400 font-medium">Tiada rekod tempahan ditemui.</td></tr>`;
+            if (bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center p-4 text-slate-400">Tiada rekod data.</td></tr>';
                 return;
             }
 
-            tbody.innerHTML = filtered.map(b => {
-                let dateDisplay = '';
-                let timeDisplay = '';
-
-                if (b.type === 'jam') {
-                    dateDisplay = formatDateMalay(b.date);
-                    timeDisplay = `${b.startTime} - ${b.endTime}`;
-                } else {
-                    if (b.dayTimes) {
-                        dateDisplay = b.selectedDays.map(d => {
-                            const t = b.dayTimes[d];
-                            return `<span class="font-bold">${formatDateMalay(d)}</span> (${t ? t.startTime + '-' + t.endTime : 'Sepanjang Hari'})`;
-                        }).join('<br>');
-                        timeDisplay = 'Mengikut Tarikh';
-                    } else {
-                        dateDisplay = b.selectedDays ? b.selectedDays.map(d => formatDateMalay(d)).join(', ') : '';
-                        timeDisplay = 'Sepanjang Hari';
-                    }
-                }
-                let isCancelled = b.status === 'Dibatalkan';
+            tbody.innerHTML = bookings.map(b => {
+                let timeStr = b.type === 'jam' ? `${b.date} (${b.startTime}-${b.endTime})` : (b.selectedDays ? b.selectedDays.map(d => `${d.date}`).join(', ') : '-');
+                let statusBadge = b.status === 'Aktif' ? '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">Aktif</span>' : '<span class="bg-red-100 text-red-800 px-2 py-0.5 rounded font-bold">Dibatalkan</span>';
 
                 return `
-                    <tr class="hover:bg-slate-50 border-b border-slate-100 ${isCancelled ? 'opacity-50 line-through bg-slate-50/50' : ''}">
-                        <td class="p-3 font-mono font-bold text-blue-600">${b.id}</td>
-                        <td class="p-3 font-semibold text-slate-900">${b.teacher}</td>
-                        <td class="p-3 font-medium text-slate-800">${b.room}</td>
-                        <td class="p-3 text-slate-700">
-                            <div>${dateDisplay}</div>
-                            <div class="text-[11px] text-slate-500 font-medium mt-0.5">${timeDisplay}</div>
-                        </td>
-                        <td class="p-3 text-slate-700 max-w-xs truncate">${b.purpose}</td>
-                        <td class="p-3 text-center">
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                                isCancelled ? 'bg-slate-200 text-slate-600' : 'bg-emerald-100 text-emerald-800'
-                            }">${b.status}</span>
+                    <tr class="hover:bg-slate-50 border-b">
+                        <td class="p-2 font-mono font-bold">${b.id}</td>
+                        <td class="p-2">${b.teacher}</td>
+                        <td class="p-2">${b.room}</td>
+                        <td class="p-2">${timeStr}</td>
+                        <td class="p-2">${statusBadge}</td>
+                        <td class="p-2 text-center">
+                            <button onclick="adminDeleteRecord('${b.id}')" class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-[10px] font-bold">
+                                <i class="fas fa-trash-alt"></i> Padam
+                            </button>
                         </td>
                     </tr>
                 `;
             }).join('');
         }
 
-        function renderMonthlyCalendar() {
-            const grid = document.getElementById('monthlyCalendarGrid');
-            const title = document.getElementById('calendarMonthTitle');
-            if (!grid) return;
+        function adminDeleteRecord(id) {
+            showConfirmModal("Padam Rekod Admin", `Adakah anda pasti untuk memadam rekod ${id} secara kekal?`, async function() {
+                bookings = bookings.filter(b => b.id !== id);
+                localStorage.setItem('ebilik_bookings', JSON.stringify(bookings));
+                renderAll();
 
-            const year = calendarCurrentDate.getFullYear();
-            const month = calendarCurrentDate.getMonth();
-
-            title.innerText = `Kalendar Tempahan - ${calendarCurrentDate.toLocaleDateString('ms-MY', { month: 'long', year: 'numeric' })}`;
-
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-            grid.innerHTML = '';
-
-            for (let i = 0; i < firstDay; i++) {
-                grid.innerHTML += `<div class="p-2 bg-slate-50/50 rounded-xl min-h-[75px]"></div>`;
-            }
-
-            for (let d = 1; d <= daysInMonth; d++) {
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                
-                const dayBookings = bookings.filter(b => {
-                    if (b.status === 'Dibatalkan') return false;
-                    if (b.type === 'jam') return b.date === dateStr;
-                    return b.selectedDays && b.selectedDays.includes(dateStr);
-                });
-
-                grid.innerHTML += `
-                    <div class="p-2 bg-white border border-slate-200 rounded-xl min-h-[80px] flex flex-col justify-between shadow-sm">
-                        <span class="font-bold text-xs text-slate-800">${d}</span>
-                        <div class="space-y-1 mt-1">
-                            ${dayBookings.map(b => `
-                                <div class="p-1 bg-blue-50 text-blue-800 border border-blue-200 rounded text-[9px] font-bold truncate" title="${b.room} - ${b.teacher}">
-                                    ${b.room}
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        function changeCalendarMonth(delta) {
-            calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + delta);
-            renderMonthlyCalendar();
-        }
-
-        function resetCalendarToToday() {
-            calendarCurrentDate = new Date();
-            renderMonthlyCalendar();
-        }
-
-        let confirmCallback = null;
-
-        function showConfirmModal(title, message, onConfirm) {
-            document.getElementById('confirmModalTitle').innerText = title || 'Pengesahan Tindakan';
-            document.getElementById('confirmModalMessage').innerText = message || 'Adakah anda pasti?';
-            confirmCallback = onConfirm;
-            document.getElementById('confirmModal').classList.remove('hidden');
-        }
-
-        function closeConfirmModal(isConfirmed) {
-            document.getElementById('confirmModal').classList.add('hidden');
-            if (isConfirmed && typeof confirmCallback === 'function') {
-                confirmCallback();
-            }
-            confirmCallback = null;
-        }
-
-        function handleUserCancelBooking() {
-            const id = document.getElementById('lookupId').value.trim();
-            const pin = document.getElementById('lookupPin').value.trim();
-
-            const target = bookings.find(b => b.id === id && b.pin === pin);
-            if (!target) {
-                showToast('ID Tempahan atau Kod PIN 3-Digit tidak sepadan!', 'error');
-                return;
-            }
-
-            if (target.status === 'Dibatalkan') {
-                showToast('Tempahan ini sememangnya telah dibatalkan.', 'error');
-                return;
-            }
-
-            showConfirmModal(
-                'Batalkan Tempahan',
-                `Adakah anda pasti mahu membatalkan tempahan ${target.id} (${target.room})?`,
-                () => {
-                    target.status = 'Dibatalkan';
-                    saveData();
-                    renderLiveBadges();
-                    renderJadualView();
-                    showToast('Tempahan berjaya dibatalkan.', 'success');
+                if (scriptUrl) {
+                    fetch(scriptUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'payload=' + encodeURIComponent(JSON.stringify({
+                            action: 'cancelBooking',
+                            id: id
+                        }))
+                    });
                 }
-            );
-        }
-
-        function toggleAdminModal() {
-            if (isAdminLoggedIn) {
-                switchTab('admin');
-            } else {
-                document.getElementById('adminLoginModal').classList.toggle('hidden');
-            }
-        }
-
-        function closeAdminModal() {
-            const modal = document.getElementById('adminLoginModal');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        function handleAdminLogin(e) {
-            e.preventDefault();
-            const u = document.getElementById('adminUser').value;
-            const p = document.getElementById('adminPass').value;
-
-            if (u === 'adminskuses' && p === 'Bea7620@') {
-                isAdminLoggedIn = true;
-                document.getElementById('adminBtnLabel').innerText = 'Panel Admin';
-                document.getElementById('tab-admin').classList.remove('hidden');
-                closeAdminModal();
-                switchTab('admin');
-                showToast('Log masuk Admin berjaya!', 'success');
-                document.getElementById('adminUser').value = '';
-                document.getElementById('adminPass').value = '';
-            } else {
-                showToast('ID atau Kata Laluan Admin salah!', 'error');
-            }
-        }
-
-        function logoutAdmin() {
-            isAdminLoggedIn = false;
-            document.getElementById('adminBtnLabel').innerText = 'Mod Admin';
-            document.getElementById('tab-admin').classList.hidden = true;
-            switchTab('tempah');
-            showToast('Log keluar berjaya.', 'success');
-        }
-
-        function renderAdminView() {
-            const tbody = document.getElementById('adminTableBody');
-            if (!tbody) return;
-
-            if (bookings.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400 font-medium">Tiada rekod tempahan.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = bookings.map(b => `
-                <tr class="hover:bg-slate-50 border-b border-slate-200">
-                    <td class="p-3 font-mono font-bold text-blue-600">${b.id}</td>
-                    <td class="p-3 font-bold">${b.teacher}</td>
-                    <td class="p-3">${b.room}</td>
-                    <td class="p-3">${b.type === 'jam' ? b.date + ' (' + b.startTime + '-' + b.endTime + ')' : 'Multi-Day'}</td>
-                    <td class="p-3 font-mono font-bold text-slate-700">${b.pin}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${b.status === 'Aktif' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">${b.status}</span></td>
-                    <td class="p-3 text-center">
-                        <button type="button" onclick="adminDeleteBooking('${b.id}')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition shadow-sm active:scale-95 cursor-pointer">
-                            <i class="fa-solid fa-trash-can mr-1"></i> Padam
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function adminDeleteBooking(id) {
-            const booking = bookings.find(b => b.id === id);
-            const teacherName = booking ? booking.teacher : 'tempahan ini';
-
-            showConfirmModal(
-                'Padam Tempahan Permanen',
-                `Adakah anda pasti mahu memadam rekod ${id} oleh ${teacherName} secara kekal?`,
-                () => {
-                    bookings = bookings.filter(b => b.id !== id);
-                    saveData();
-                    renderAdminView();
-                    renderLiveBadges();
-                    renderJadualView();
-                    showToast('Rekod tempahan telah dipadam.', 'success');
-                }
-            );
-        }
-
-        function exportDataCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,ID,Pemohon,Bilik,Jenis,Tarikh,Masa Mula,Masa Tamat,Tujuan,PIN,Status\n";
-            bookings.forEach(b => {
-                let dates = b.type === 'jam' ? b.date : (b.selectedDays ? b.selectedDays.join(';') : '');
-                csvContent += `"${b.id}","${b.teacher}","${b.room}","${b.type}","${dates}","${b.startTime}","${b.endTime}","${b.purpose}","${b.pin}","${b.status}"\n`;
+                setTimeout(loadBookingsFromGS, 1500);
             });
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Data_Tempahan_E-Bilik_SKUSES_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
         }
 
-        function formatDateMalay(dateStr) {
-            if (!dateStr) return '';
-            const d = new Date(dateStr);
-            return d.toLocaleDateString('ms-MY', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        }
-
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            const bgColor = type === 'success' ? 'bg-emerald-600' : type === 'error' ? 'bg-rose-600' : 'bg-slate-900';
-            toast.className = `${bgColor} text-white px-4 py-3 rounded-2xl shadow-2xl text-xs font-bold flex items-center gap-2 transform transition-all duration-300 border border-white/10`;
-            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> ${message}`;
+        // CUSTOM CONFIRMATION MODAL LOGIC
+        function showConfirmModal(title, msg, onOk) {
+            document.getElementById('confirmTitle').innerText = title;
+            document.getElementById('confirmMessage').innerText = msg;
+            const modal = document.getElementById('confirmModal');
             
-            const container = document.getElementById('toastContainer');
-            container.appendChild(toast);
+            const okBtn = document.getElementById('confirmOkBtn');
+            const cancelBtn = document.getElementById('confirmCancelBtn');
 
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-2');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            modal.classList.remove('hidden');
+
+            const handleOk = () => {
+                modal.classList.add('hidden');
+                cleanup();
+                onOk();
+            };
+
+            const handleCancel = () => {
+                modal.classList.add('hidden');
+                cleanup();
+            };
+
+            const cleanup = () => {
+                okBtn.removeEventListener('click', handleOk);
+                cancelBtn.removeEventListener('click', handleCancel);
+            };
+
+            okBtn.addEventListener('click', handleOk);
+            cancelBtn.addEventListener('click', handleCancel);
         }
     </script>
 </body>
