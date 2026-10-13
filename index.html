@@ -517,6 +517,12 @@
     <script>
         const STORAGE_KEY = 'ebilik_skuses_data_v6';
         const GAS_URL_KEY = 'ebilik_skuses_gas_url';
+        
+        // =========================================================================
+        // URL GOOGLE APPS SCRIPT WEB APP RASMI SKUSES
+        // =========================================================================
+        const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbz57OK5yXtnwh9c2VmuWU2ptLccKM2Fqfucq4mN6rbRzDrfGj7vQBmRT8qwUpzntTBM/exec'; 
+
         const ROOM_LIST = [
             'Aula Inspirasi', 'Dewan Gemilang', 'Bilik MBMMBI', 'Bilik APD',
             'Makmal Komputer 1', 'Makmal Komputer 2', 'PSS D Anggerik', 'Bilik Intelek'
@@ -564,9 +570,9 @@
                 }
             }
 
-            const savedGasUrl = localStorage.getItem(GAS_URL_KEY);
-            if (savedGasUrl && document.getElementById('gasUrlInput')) {
-                document.getElementById('gasUrlInput').value = savedGasUrl;
+            const currentGasUrl = getGasUrl();
+            if (currentGasUrl && document.getElementById('gasUrlInput')) {
+                document.getElementById('gasUrlInput').value = currentGasUrl;
             }
             refreshAllViews();
         }
@@ -580,7 +586,11 @@
         }
 
         function getGasUrl() {
-            return localStorage.getItem(GAS_URL_KEY) || (document.getElementById('gasUrlInput') ? document.getElementById('gasUrlInput').value.trim() : '');
+            const savedUrl = localStorage.getItem(GAS_URL_KEY);
+            if (savedUrl && savedUrl !== 'PASTE_URL_WEB_APP_ANDA_DI_SINI') {
+                return savedUrl;
+            }
+            return DEFAULT_GAS_URL;
         }
 
         async function fetchBookingsFromSheets(isSilent = false) {
@@ -1018,8 +1028,8 @@
 
         async function syncToGoogleSheets(bookingData) {
             const gasUrl = getGasUrl();
-            if (!gasUrl) {
-                showToast('AMARAN: Pautan Google Sheets Web App belum disimpan!', 'error');
+            if (!gasUrl || gasUrl === 'PASTE_URL_WEB_APP_ANDA_DI_SINI') {
+                showToast('AMARAN: Pautan Google Sheets Web App belum ditetapkan!', 'error');
                 return;
             }
 
@@ -1044,14 +1054,8 @@
         function saveGasUrl() {
             const url = document.getElementById('gasUrlInput').value.trim();
             localStorage.setItem(GAS_URL_KEY, url);
-            showToast('Pautan Google Sheets Web App berjaya disimpan!', 'success');
+            showToast('Pautan Google Sheets Web App berjaya dikemas kini!', 'success');
             fetchBookingsFromSheets();
-        }
-
-        function saveGasUrl() {
-            const url = document.getElementById('gasUrlInput').value.trim();
-            localStorage.setItem(GAS_URL_KEY, url);
-            showToast('Pautan Google Sheets Web App berjaya disimpan!', 'success');
         }
 
         function renderLiveBadges() {
