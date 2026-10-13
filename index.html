@@ -519,17 +519,14 @@
         let bookings = [];
         let isAdminLoggedIn = false;
         let selectedMultiDays = [];
-        let selectedDayTimes = {}; // Stores { 'YYYY-MM-DD': { startTime: '08:00', endTime: '17:00' } }
+        let selectedDayTimes = {};
         let calendarCurrentDate = new Date();
         let multiPickerDate = new Date();
 
         document.addEventListener('DOMContentLoaded', () => {
             loadInitialData();
             setupMinDateRestriction();
-            renderLiveBadges();
-            renderMultiDayCalendar();
-            renderJadualView();
-            renderMonthlyCalendar();
+            fetchBookingsFromSheets(); // Ambil data terkini terus dari Google Sheet secara auto
         });
 
         function setupMinDateRestriction() {
@@ -549,28 +546,41 @@
                 } catch (e) {
                     bookings = [];
                 }
-            } else {
-                bookings = [
-                    {
-                        id: 'BK-1001',
-                        teacher: 'Cikgu Noraini',
-                        room: 'Aula Inspirasi',
-                        type: 'jam',
-                        date: new Date().toISOString().split('T')[0],
-                        startTime: '08:00',
-                        endTime: '10:00',
-                        purpose: 'Taklimat Kejohanan Olahraga Sekolah',
-                        pin: '123',
-                        status: 'Aktif',
-                        createdAt: new Date().toISOString()
-                    }
-                ];
-                saveData();
             }
 
             const savedGasUrl = localStorage.getItem(GAS_URL_KEY);
             if (savedGasUrl && document.getElementById('gasUrlInput')) {
                 document.getElementById('gasUrlInput').value = savedGasUrl;
+            }
+            refreshAllViews();
+        }
+
+        function refreshAllViews() {
+            renderLiveBadges();
+            renderMultiDayCalendar();
+            renderJadualView();
+            renderMonthlyCalendar();
+            if (isAdminLoggedIn) renderAdminView();
+        }
+
+        function getGasUrl() {
+            return localStorage.getItem(GAS_URL_KEY) || (document.getElementById('gasUrlInput') ? document.getElementById('gasUrlInput').value.trim() : '');
+        }
+
+        async function fetchBookingsFromSheets() {
+            const gasUrl = getGasUrl();
+            if (!gasUrl) return;
+
+            try {
+                const response = await fetch(gasUrl);
+                const data = await response.json();
+                if (Array.isArray(data)) {
+                    bookings = data;
+                    saveData();
+                    refreshAllViews();
+                }
+            } catch (err) {
+                console.log('Muat turun data Google Sheets terhenti:', err);
             }
         }
 
@@ -875,15 +885,16 @@
 
             bookings.unshift(newBooking);
             saveData();
-            syncToGoogleSheets(newBooking);
+            refreshAllViews();
+
+            // Hantar ke Google Sheets
+            await syncToGoogleSheets(newBooking);
 
             document.getElementById('bookingForm').reset();
             selectedMultiDays = [];
             selectedDayTimes = {};
             setupMinDateRestriction();
-            renderMultiDayCalendar();
-            renderMultiDayTimeInputs();
-            renderLiveBadges();
+            refreshAllViews();
 
             openTelegramModal(newBooking);
         }
@@ -965,8 +976,11 @@
         }
 
         async function syncToGoogleSheets(bookingData) {
-            const gasUrl = localStorage.getItem(GAS_URL_KEY);
-            if (!gasUrl) return;
+            const gasUrl = getGasUrl();
+            if (!gasUrl) {
+                showToast('AMARAN: Pautan Google Sheets Web App belum disimpan!', 'error');
+                return;
+            }
 
             try {
                 await fetch(gasUrl, {
@@ -975,9 +989,18 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(bookingData)
                 });
+                // Muat turun semula data terkini untuk kepastian
+                setTimeout(fetchBookingsFromSheets, 1500);
             } catch (err) {
                 console.error('Google Sheets Sync Error:', err);
             }
+        }
+
+        function saveGasUrl() {
+            const url = document.getElementById('gasUrlInput').value.trim();
+            localStorage.setItem(GAS_URL_KEY, url);
+            showToast('Pautan Google Sheets Web App berjaya disimpan!', 'success');
+            fetchBookingsFromSheets();
         }
 
         function saveGasUrl() {
@@ -1158,11 +1181,24 @@
             showConfirmModal(
                 'Batalkan Tempahan',
                 `Adakah anda pasti mahu membatalkan tempahan ${target.id} (${target.room})?`,
-                () => {
+                async () => {
                     target.status = 'Dibatalkan';
                     saveData();
-                    renderLiveBadges();
-                    renderJadualView();
+                    refreshAllViews();
+
+                    // Hantar status pembatalan ke Google Sheets
+                    const gasUrl = getGasUrl();
+                    if (gasUrl) {
+                        try {
+                            await fetch(gasUrl, {
+                                method: 'POST',
+                                mode: 'no-cors',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ action: 'cancel', id: target.id })
+                            });
+                        } catch(e){}
+                    }
+
                     showToast('Tempahan berjaya dibatalkan.', 'success');
                 }
             );
